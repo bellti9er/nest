@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule           } from './app.module';
 import { swaggerSetup        } from './util/swagger-setup';
-import { HttpExceptionFilter } from './common/expection/common.exception';
+import { HttpExceptionFilter } from './common/exception/common.exception';
 
 declare const module: any;
 

@@ -1,17 +1,35 @@
+import { Type                 } from "@nestjs/common";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { SnakeNamingStrategy  } from "typeorm-naming-strategies";
 
 import { CommonModule } from "src/common/common.module";
-import { AuthModule   } from "src/auth/auth.module";
-import { UserModule   } from "src/user/user.module";
+import { AuthModule   } from "src/modules/auth/auth.module";
+import { UserModule   } from "src/modules/user/user.module";
 
-export const MODULES = [
+// 애플리케이션 설정을 위한 인터페이스 정의
+export interface AppConfig {
+  modulesConfig  : Type[];
+  databaseConfig : TypeOrmModuleOptions;
+  tokenConfig    : TokenInfoConfig;
+}
+
+// 토큰 설정을 위한 인터페이스 정의
+export interface TokenInfoConfig {
+  accessTokenSecretKey  : string;
+  accessTokenExpDate    : string;
+  refreshTokenSecretKey : string;
+  refreshTokenExpDate   : string;
+}
+
+// 모듈 설정 함수
+export const modulesConfig = (): Type[] => ([
   CommonModule,
   UserModule,
   AuthModule
-];
+]);
 
-export const TypeORMConfig: TypeOrmModuleOptions = {
+// 데이터베이스 설정 함수
+export const databaseConfig = (): TypeOrmModuleOptions => ({
   type           : 'postgres',
   host           : process.env.DB_HOST,
   port           : +process.env.DB_PORT,
@@ -22,4 +40,21 @@ export const TypeORMConfig: TypeOrmModuleOptions = {
   logging        : false,
   namingStrategy : new SnakeNamingStrategy(),
   entities       : [__dirname + '/../**/*.entity.{js,ts}'],
-}
+});
+
+// 토큰 설정 함수
+export const tokenConfig = (): TokenInfoConfig => ({
+  accessTokenSecretKey  : process.env.ACCESS_TOKEN_SECRET_KEY,
+  accessTokenExpDate    : process.env.ACCESS_TOKEN_EXPIRE_DATE,
+  refreshTokenSecretKey : process.env.REFRESH_TOKEN_SECRET_KEY,
+  refreshTokenExpDate   : process.env.REFRESH_TOKEN_EXPIRE_DATE
+});
+
+// 최종 설정된 객체를 반환하는 함수
+const config = (): AppConfig => ({
+  modulesConfig  : modulesConfig(),
+  databaseConfig : databaseConfig(),
+  tokenConfig    : tokenConfig()
+})
+
+export default config;
