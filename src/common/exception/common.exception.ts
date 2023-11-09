@@ -12,6 +12,7 @@ import {
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
+  // 예외 발생 시 NestJS에 의해 호출
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx      = host.switchToHttp();
     const request  = ctx.getRequest<Request>();
@@ -26,7 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode : status,
       timestamp  : new Date().toISOString(),
       path       : request.url,
-      message    : this.getErrorMessage(exception)
+      ...this.getErrorResponse(exception)
     };
 
     if(process.env.STAGE === 'DEV') {
@@ -38,13 +39,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     return response.status(status).json(responsePayload);
   }
 
-  private getErrorMessage(exception: unknown): string {
+  private getErrorResponse(exception: unknown): { id: string, message: string } {
     if(exception instanceof HttpException) {
       const response = exception.getResponse();
 
-      return typeof response === 'string' ? response : (response as any).message;
+      if(typeof response === 'object' && response !== null) {
+        return {
+          id      : (response as any).id      ?? 'UnknownError',
+          message : (response as any).message ?? 'An error occurred'
+        }
+      }
     }
 
-    return 'Internal Server Error';
+    return {
+      id      : 'InternalServerError',
+      message : 'Internal Server Error'
+    }
   }
 }
