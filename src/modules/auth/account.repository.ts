@@ -11,6 +11,10 @@ export class AccountRepository extends Repository<Account> {
     super(Account, dataSource.createEntityManager());
   }
 
+  async findAccountByUid(uid: string): Promise<Account | undefined> {
+    return this.findOne({ where: { uid }})
+  }
+
   async findAccountByEmail(email: string): Promise<Account | undefined> {
     return this.findOne({ where: { email }})
   }
