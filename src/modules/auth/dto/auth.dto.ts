@@ -79,3 +79,4 @@ export class SignInOutputDto {
   @ApiProperty({ description: '리프레쉬 토큰' })
   refreshToken?: string;
 }
+

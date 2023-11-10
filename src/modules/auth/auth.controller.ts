@@ -5,6 +5,7 @@ import { SwaggerDecorator                                } from 'src/common/deco
 import { ResultFormatInterceptor                         } from 'src/common/interceptor/result-format.interceptor';
 import { AuthService                                     } from './auth.service';
 import { SignInInputDto, SignInOutputDto, SignUpInputDto } from './dto/auth.dto';
+import { RefreshTokenInputDto, RefreshTokenOutputDto } from './dto/refresh-token.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -22,11 +23,11 @@ export class AuthController {
     outputType  : SignInOutputDto,
     requireAuth : false,
   })
-  @Post('/local/signup')
+  @Post('local/signup')
   async signUp(
     @Body() body: SignUpInputDto
   ): Promise<SignInOutputDto> {
-    this.logger.log(`[signUp] info: ${JSON.stringify(body)}`)
+    this.logger.log(`[signUp] info: ${JSON.stringify({ ...body, password: '***' })}`);
 
     return this.authService.signUp(body)
   }
@@ -37,12 +38,25 @@ export class AuthController {
     outputType  : SignInOutputDto,
     requireAuth : false
   })
-  @Post('/local/signin')
+  @Post('local/signin')
   async signIn(
     @Body() body: SignInInputDto
   ): Promise<SignInOutputDto> {
-    this.logger.log(`[signIn] email: ${body.email}`)
+    this.logger.log(`[signIn] info: ${JSON.stringify({ ...body, password: '***' })}`);
     
     return this.authService.signIn(body);
+  }
+
+  @SwaggerDecorator({
+    summary     : '액세스 토큰 재발급',
+    description : '액세스 토큰이 만료된 경우 리프레시 토큰을 통하여 재발급을 받습니다.',
+    outputType  : RefreshTokenOutputDto,
+    requireAuth : false
+  })
+  @Post('refresh')
+  async refreshAccessToken(
+    @Body() body: RefreshTokenInputDto
+  ): Promise<RefreshTokenOutputDto> {
+    return this.authService.refreshAccessToken(body);
   }
 }
