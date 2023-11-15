@@ -9,7 +9,7 @@ import { JwtService    } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 
 import { AccountRepository } from "../account.repository";
-import { AUTH_ERROR        } from "../error/auth.error";
+import { AUTH_ERROR, AuthError        } from "../error/auth.error";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -18,7 +18,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private readonly accountRepository : AccountRepository,
     private readonly jwtService        : JwtService,
-    private readonly configService     : ConfigService
+    private readonly configService     : ConfigService,
+    private readonly authError         : AuthError
   ) {
     super();
   }
@@ -27,20 +28,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const request           = context.switchToHttp().getRequest();
     const { authorization } = request.headers;
     
-    if(!authorization) throw new UnauthorizedException(AUTH_ERROR.ACCESS_TOKEN_MISSING);
+    if(!authorization) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCESS_TOKEN_MISSING));
     
     const [bearer, token] = authorization.split(' ');
     
-    if(bearer !== 'Bearer' || !token) throw new UnauthorizedException();
+    if(bearer !== 'Bearer' || !token) throw new UnauthorizedException(AUTH_ERROR.ACCESS_TOKEN_MALFORMED);
     
     const accountUid = await this.validateToken(token);
-    
     const account    = await this.accountRepository.findAccountByUid(accountUid);
     
     if(!account) throw new UnauthorizedException(AUTH_ERROR.ACCOUNT_NOT_FOUND);
     
     request.user = {
-      id        : account.user.id,
+      userId    : account.user.id,
       accountId : account.id
     }
     

@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import { NestFactory    } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService  } from '@nestjs/config';
 
 import { AppModule           } from './app.module';
 import { swaggerSetup        } from './util/swagger-setup';
@@ -10,8 +11,9 @@ import { HttpExceptionFilter } from './common/exception/common.exception';
 declare const module: any;
 
 async function bootstrap() {
-  const app  = await NestFactory.create(AppModule);
-  const PORT = process.env.PORT || 8080;
+  const app           = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const PORT          = configService.get<string>('PORT') || 8080;
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -13,7 +13,8 @@ export const AUTH_ERROR = {
   REFRESH_TOKEN_MISSING             : 'refreshTokenMissing',
   REFRESH_TOKEN_MALFORMED           : 'refreshTokenMalformed',
   REFRESH_TOKEN_EXPIRED             : 'refreshTokenExpired',
-  REFRESH_TOKEN_VERIFICATION_FAILED : 'refreshTokenVerificationFailed'
+  REFRESH_TOKEN_VERIFICATION_FAILED : 'refreshTokenVerificationFailed',
+  UNSUPPORTED_OAUTH_PROVIDER        : 'unsupportedOAuthProvider'
 }
 
 export class AuthError extends CoreError {
@@ -72,6 +73,10 @@ export class AuthError extends CoreError {
       [AUTH_ERROR.REFRESH_TOKEN_VERIFICATION_FAILED]: {
         id      : AUTH_ERROR.REFRESH_TOKEN_VERIFICATION_FAILED,
         message : '리프레쉬 토큰 검증에 실패하였습니다.'
+      },
+      [AUTH_ERROR.UNSUPPORTED_OAUTH_PROVIDER]: {
+        id      : AUTH_ERROR.UNSUPPORTED_OAUTH_PROVIDER,
+        message : '지원되지 않는 OAuth 공급자입니다.'
       },
     }
   }

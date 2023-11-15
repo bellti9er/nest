@@ -1,13 +1,11 @@
-import { ApiProperty                                 } from "@nestjs/swagger";
-import { Column, Entity, Generated, OneToOne, Unique } from "typeorm";
+import { ApiProperty                         } from "@nestjs/swagger";
+import { Column, Entity, Generated, OneToOne } from "typeorm";
 
 import { CoreEntity } from "src/common/entity/core.entity";
 import { Account    } from "src/modules/auth/entity/account.entity";
 import { Gender     } from "../enum/user.enum";
 
 @Entity('users')
-@Unique(['nickname'])
-@Unique(['phone'])
 export class User extends CoreEntity {
   // 데이터베이스 이식성 : 데이터 이전시 동일한 식별자 유지
   // 분산 시스템 : 여러 시스템에서 충돌 없이 고유한 값을 유지
@@ -20,7 +18,7 @@ export class User extends CoreEntity {
   @OneToOne(() => Account, (account) => account.user, { onDelete: 'CASCADE' })
   account: Account;
 
-  @Column()
+  @Column({ unique: true })
   @ApiProperty({
     description : '닉네임',
     minLength   : 2,
@@ -36,8 +34,8 @@ export class User extends CoreEntity {
   })
   profileImage: string;
 
-  @Column()
-  @ApiProperty({ description : '전화번호' })
+  @Column({ nullable:true, default: null })
+  @ApiProperty({ description: '전화번호' })
   phone: string;
 
   @Column({ nullable: true, default: null })

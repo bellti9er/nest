@@ -9,8 +9,8 @@ export function swaggerSetup(app: INestApplication) {
     .addBearerAuth({
       type         : 'http',
       scheme       : 'bearer',
-      bearerFormat : 'JWT'
-    }, 'accessToken')
+      bearerFormat : 'JWT',
+    }, 'access-token')
     .build();
 
     const document = SwaggerModule.createDocument(app, config);
