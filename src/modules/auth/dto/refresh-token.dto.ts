@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
 import { IsString              } from "class-validator";
 
-import { SignInOutputDto } from "./auth.dto";
+import { LoginOutputDto } from "./auth.dto";
 
 export class RefreshTokenInputDto {
   @IsString()
@@ -9,6 +9,6 @@ export class RefreshTokenInputDto {
   refreshToken: string;
 }
 
-export class RefreshTokenOutputDto extends PickType(SignInOutputDto, [
+export class RefreshTokenOutputDto extends PickType(LoginOutputDto, [
   'accessToken'
 ]) { }

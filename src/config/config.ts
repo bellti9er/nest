@@ -11,6 +11,7 @@ export interface AppConfig {
   modulesConfig  : Type[];
   databaseConfig : TypeOrmModuleOptions;
   tokenConfig    : TokenInfoConfig;
+  oauthConfig    : OAuthConfig;
 }
 
 // 토큰 설정을 위한 인터페이스 정의
@@ -19,6 +20,12 @@ export interface TokenInfoConfig {
   accessTokenExpDate    : string;
   refreshTokenSecretKey : string;
   refreshTokenExpDate   : string;
+}
+
+// OAuth 설정을 위한 인터페이스 정의
+export interface OAuthConfig {
+  kakaoClientId     : string;
+  kakaoClientSecret : string;
 }
 
 // 모듈 설정 함수
@@ -50,11 +57,18 @@ export const tokenConfig = (): TokenInfoConfig => ({
   refreshTokenExpDate   : process.env.REFRESH_TOKEN_EXPIRE_DATE
 });
 
+// OAuth 설정 함수
+export const oauthConfig = (): OAuthConfig => ({
+  kakaoClientId     : process.env.KAKAO_CLIENT_ID,
+  kakaoClientSecret : process.env.KAKAO_CLIENT_SECRET
+})
+
 // 최종 설정된 객체를 반환하는 함수
 const config = (): AppConfig => ({
   modulesConfig  : modulesConfig(),
   databaseConfig : databaseConfig(),
-  tokenConfig    : tokenConfig()
+  tokenConfig    : tokenConfig(),
+  oauthConfig    : oauthConfig()
 })
 
 export default config;

@@ -47,7 +47,7 @@ export class SignUpInputDto {
     nullable    : true,
     default     : null
   })
-  birthday: string;
+  birthday?: string;
 
   @IsEnum(Gender)
   @IsOptional()
@@ -57,11 +57,11 @@ export class SignUpInputDto {
     nullable    : true,
     default     : null
   })
-  gender: Gender;
+  gender?: Gender;
 }
 
 
-export class SignInInputDto {
+export class LoginInputDto {
   @IsEmail()
   @ApiProperty({ description: '로그인 이메일', required: true })
   email: string;
@@ -71,7 +71,7 @@ export class SignInInputDto {
   password: string;
 }
 
-export class SignInOutputDto {
+export class LoginOutputDto {
   @ApiProperty({ description: '인증 토큰' })
   accessToken: string;
 

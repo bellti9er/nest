@@ -1,5 +1,5 @@
-import { Injectable             } from "@nestjs/common";
-import { DataSource, Repository } from "typeorm";
+import { Injectable                           } from "@nestjs/common";
+import { DataSource, Repository, UpdateResult } from "typeorm";
 
 import { User           } from "./entity/user.entity";
 import { SignUpInputDto } from "../auth/dto/auth.dto";
@@ -29,5 +29,9 @@ export class UserRepository extends Repository<User> {
     user.gender   = gender   || null;
 
     return this.save(user);
+  }
+
+  async updateUserProfileImage(userId: number, profileImage: string): Promise<UpdateResult> {
+    return this.update(userId, { profileImage })
   }
 }

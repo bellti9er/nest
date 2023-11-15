@@ -1,12 +1,11 @@
-import { Column, Entity, Generated, JoinColumn, OneToOne, Unique } from "typeorm";
-import { ApiProperty                                             } from "@nestjs/swagger";
+import { Column, Entity, Generated, JoinColumn, OneToOne } from "typeorm";
+import { ApiProperty                                     } from "@nestjs/swagger";
 
 import { CoreEntity } from "src/common/entity/core.entity";
 import { User       } from "src/modules/user/entity/user.entity";
-import { Provider   } from "../enum/account.enum";
+import { Provider   } from "../enum/provider.enum";
 
 @Entity('accounts')
-@Unique(['email'])
 export class Account extends CoreEntity {
   @Column()
   @Generated('uuid')
@@ -17,14 +16,15 @@ export class Account extends CoreEntity {
   @JoinColumn()
   user: User;
 
-  @Column()
+  @Column({ unique: true })
   @ApiProperty({ description: '이메일' })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty({
     description : '비밀번호 (알파벳+숫자+특수문자, 8자 이상)',
-    example     : 'abcd1234!@'
+    example     : 'abcd1234!@',
+    nullable    : true
   })
   password: string;
 
@@ -34,6 +34,13 @@ export class Account extends CoreEntity {
     enum        : Provider
   })
   provider: Provider;
+
+  @Column({ unique: true, nullable: true})
+  @ApiProperty({
+    description : 'OAuth 제공자 고유 ID',
+    nullable    : true
+  })
+  oauthProviderId: string;
 
   @Column({ nullable: true, default: null })
   @ApiProperty({
