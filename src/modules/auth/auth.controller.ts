@@ -14,16 +14,16 @@ import {
 import { ApiTags           } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import { SwaggerDecorator                                } from 'src/common/decorator/swagger.decorator';
-import { ResultFormatInterceptor                         } from 'src/common/interceptor/result-format.interceptor';
-import { GetUserId                                       } from 'src/common/decorator/user.decorator';
-import { AuthService                                     } from './auth.service';
-import { LoginInputDto, LoginOutputDto, SignUpInputDto   } from './dto/auth.dto';
-import { RefreshTokenInputDto, RefreshTokenOutputDto     } from './dto/refresh-token.dto';
-import { OAuthGuardGenerator                             } from './guard/oauth.guard';
-import { Provider                                        } from './enum/provider.enum';
-import { IOAuthProfile                                   } from './interface/oauth-profile.interface';
-import { JwtAuthGuard                                    } from './guard/jwt.guard';
+import { SwaggerDecorator                              } from 'src/common/decorator/swagger.decorator';
+import { ResultFormatInterceptor                       } from 'src/common/interceptor/result-format.interceptor';
+import { GetUserId                                     } from 'src/common/decorator/user.decorator';
+import { AuthService                                   } from './auth.service';
+import { LoginInputDto, LoginOutputDto, SignUpInputDto } from './dto/auth.dto';
+import { RefreshTokenInputDto, RefreshTokenOutputDto   } from './dto/refresh-token.dto';
+import { OAuthGuardGenerator                           } from './guard/oauth.guard';
+import { Provider                                      } from './enum/provider.enum';
+import { IOAuthProfile                                 } from './interface/oauth-profile.interface';
+import { JwtAuthGuard                                  } from './guard/jwt.guard';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -94,7 +94,7 @@ export class AuthController {
   @SwaggerDecorator({
     summary     : '카카오 로그인 콜백',
     description : '카카오 OAuth 로그인 프로세스의 콜백 처리를 담당합니다.',
-    outputType  : LoginOutputDto, // 적절한 출력 타입을 설정해주세요
+    outputType  : LoginOutputDto,
     requireAuth : false
   })
   @Get('login/kakao/callback')

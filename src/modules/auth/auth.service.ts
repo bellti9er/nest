@@ -67,9 +67,9 @@ export class AuthService {
         this.userRepository.findUserByPhone(body.phone)
       ]);
 
-      if(duplicatedAccount)  throw new ConflictException(AUTH_ERROR.ACCOUNT_EMAIL_ALREADY_EXIST);
-      if(duplicatedNickname) throw new ConflictException(AUTH_ERROR.ACCOUNT_NICKNAME_ALREADY_EXIST);
-      if(duplicatedPhone)    throw new ConflictException(AUTH_ERROR.ACCOUNT_PHONE_ALREADY_EXIST);
+      if(duplicatedAccount)  throw new ConflictException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_EMAIL_ALREADY_EXIST));
+      if(duplicatedNickname) throw new ConflictException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_NICKNAME_ALREADY_EXIST));
+      if(duplicatedPhone)    throw new ConflictException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_PHONE_ALREADY_EXIST));
 
       const hashedPassword = await this.commonService.hash(body.password);
       const user           = await this.userRepository.createUser(body);
@@ -102,11 +102,11 @@ export class AuthService {
 
       const userAccount = await this.accountRepository.findAccountByEmail(email);
 
-      if(!userAccount) throw new UnauthorizedException(AUTH_ERROR.ACCOUNT_NOT_FOUND);
+      if(!userAccount) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_NOT_FOUND));
 
       const isPasswordMatched = await this.commonService.hashCompare(password, userAccount.password);
 
-      if(!isPasswordMatched) throw new UnauthorizedException(AUTH_ERROR.ACCOUNT_PASSWORD_WAS_WRONG);
+      if(!isPasswordMatched) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_PASSWORD_WAS_WRONG));
 
       const { accessToken, refreshToken } = await this.getTokens({ accountUid: userAccount.uid });
 
@@ -178,7 +178,7 @@ export class AuthService {
   }
 
   async refreshAccessToken(body: RefreshTokenInputDto): Promise<RefreshTokenOutputDto> {
-    if(!body.refreshToken) throw new UnauthorizedException(AUTH_ERROR.REFRESH_TOKEN_MISSING);
+    if(!body.refreshToken) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.REFRESH_TOKEN_MISSING));
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -189,7 +189,7 @@ export class AuthService {
       const secret  = this.refreshTokenSecretKey;
       const decoded = this.jwtService.verify(body.refreshToken, { secret })
 
-      if(!decoded) throw new UnauthorizedException(AUTH_ERROR.REFRESH_TOKEN_VERIFICATION_FAILED);
+      if(!decoded) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.REFRESH_TOKEN_VERIFICATION_FAILED));
 
       const account     = await this.accountRepository.findAccountByUid(decoded.accountUid)
       const payload     = { accountUid : account.uid };
@@ -213,7 +213,7 @@ export class AuthService {
     try {
       const account = await this.accountRepository.findAccountByUserId(userId);
 
-      if(!account) throw new UnauthorizedException(AUTH_ERROR.ACCOUNT_NOT_FOUND);
+      if(!account) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_NOT_FOUND));
 
       await this.accountRepository.updateRefreshToken(account.id, null);
 
