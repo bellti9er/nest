@@ -8,8 +8,8 @@ import { AuthGuard     } from "@nestjs/passport";
 import { JwtService    } from "@nestjs/jwt"; 
 import { ConfigService } from "@nestjs/config";
 
-import { AccountRepository } from "../account.repository";
-import { AUTH_ERROR, AuthError        } from "../error/auth.error";
+import { AccountRepository     } from "../account.repository";
+import { AUTH_ERROR, AuthError } from "../error/auth.error";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -32,12 +32,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     
     const [bearer, token] = authorization.split(' ');
     
-    if(bearer !== 'Bearer' || !token) throw new UnauthorizedException(AUTH_ERROR.ACCESS_TOKEN_MALFORMED);
+    if(bearer !== 'Bearer' || !token) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCESS_TOKEN_MALFORMED));
     
     const accountUid = await this.validateToken(token);
     const account    = await this.accountRepository.findAccountByUid(accountUid);
     
-    if(!account) throw new UnauthorizedException(AUTH_ERROR.ACCOUNT_NOT_FOUND);
+    if(!account) throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCOUNT_NOT_FOUND));
     
     request.user = {
       userId    : account.user.id,
@@ -56,7 +56,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     } catch(error) {
       this.logger.error(`Token validation failed: ${error.message}`, error.stack);
 
-      throw new UnauthorizedException(AUTH_ERROR.ACCESS_TOKEN_VERIFICATION_FAILED);
+      throw new UnauthorizedException(this.authError.errorHandler(AUTH_ERROR.ACCESS_TOKEN_VERIFICATION_FAILED));
     }
   }
 }

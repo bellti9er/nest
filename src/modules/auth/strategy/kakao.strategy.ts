@@ -12,8 +12,8 @@ export class KakaoOAuthStrategy extends PassportStrategy(Strategy, Provider.KAKA
   private readonly logger = new Logger(KakaoOAuthStrategy.name);
 
   constructor(
-    private readonly configService     : ConfigService,
-    private readonly authService       : AuthService
+    private readonly configService : ConfigService,
+    private readonly authService   : AuthService
   ) {
     super({
       clientID     : configService.get<string>('KAKAO_CLIENT_ID'),

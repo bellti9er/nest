@@ -14,16 +14,16 @@ import {
 import { ApiTags           } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import { SwaggerDecorator                                } from 'src/common/decorator/swagger.decorator';
-import { ResultFormatInterceptor                         } from 'src/common/interceptor/result-format.interceptor';
-import { GetUserId                                       } from 'src/common/decorator/user.decorator';
-import { AuthService                                     } from './auth.service';
-import { LoginInputDto, LoginOutputDto, SignUpInputDto   } from './dto/auth.dto';
-import { RefreshTokenInputDto, RefreshTokenOutputDto     } from './dto/refresh-token.dto';
-import { OAuthGuardGenerator                             } from './guard/oauth.guard';
-import { Provider                                        } from './enum/provider.enum';
-import { IOAuthProfile                                   } from './interface/oauth-profile.interface';
-import { JwtAuthGuard                                    } from './guard/jwt.guard';
+import { SwaggerDecorator                              } from 'src/common/decorator/swagger.decorator';
+import { ResultFormatInterceptor                       } from 'src/common/interceptor/result-format.interceptor';
+import { GetUserId                                     } from 'src/common/decorator/user.decorator';
+import { AuthService                                   } from './auth.service';
+import { LoginInputDto, LoginOutputDto, SignUpInputDto } from './dto/auth.dto';
+import { RefreshTokenInputDto, RefreshTokenOutputDto   } from './dto/refresh-token.dto';
+import { OAuthGuardGenerator                           } from './guard/oauth.guard';
+import { Provider                                      } from './enum/provider.enum';
+import { IOAuthProfile                                 } from './interface/oauth-profile.interface';
+import { JwtAuthGuard                                  } from './guard/jwt.guard';
 
 @ApiTags('AUTH')
 @Controller('auth')
